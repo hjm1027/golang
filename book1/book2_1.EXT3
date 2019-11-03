@@ -1,0 +1,26 @@
+###程序结构：大程序都从小的基本组件构建而来：变量存储值（数据），简单表达式通过加和减等操作合并成大的，基本类型通过数组和结构体进行聚合，表达式通过if和for等控制语句来决定执行顺序，语句被组织成函数用于隔离和复用，函数被组织成源文件和包。
+2_1名称
+1.命名规则：
+  函数、变量、常量、类型、语句标签和包都的名称开头时一个字母（unicode中的字符即可）或下划线。后面可以跟任意数量的字符、数字和下划线。并且区分大小写！！！heap和Heap是两个完全不一样的名称。另外所有变量名称不能用go的关键字。go有以下25个关键字：
+  break default func interface select case defer go map struct chan else goto
+  package switch const fallthrough if range type continue for import return var
+
+  还有三十几个内置的预声明的常量、类型和函数：
+  常量：true false iota nil
+  类型：int int8 int16 int32 int64 uintptr float32 float64 complex128 complex64
+        bool byte rune string error
+  函数：make len cap new append copy close delete complex real imag panic recover
+
+  这些名称不是预留的可以在声明中使用它们。但最好不要
+###变量名规范：
+  一般声明都越简短越好。比较重要的，作用域更大的（甚至有文件作用域）声明才用有意义的，并且长的字母来声明。比如用来计算次数的变量可以用count。几个单词连在一起在c里面会用_相连。但是go里面不会。例如count_array 会写成 countArray 这种叫做驼峰式风格。而且函数名每个单词首写一般会大写。如EscapeHtml 但不会是EscapeHTML
+###包里面函数或类型的引用一定要大写：fmt.Printf()
+
+2.变量作用域：
+  声明位置决定变量有效（可见）位置。声明在函数内部（包括main）只对函数内局部有效（除非你用make申请内存）声明在函数外的对包里的【所有】源文件有效。这里首字母是否大小写决定了它的可见性是否跨包(是否有文件作用域，别的文件可以访问俄)。如果是大写则是导出的，可被包外的其他程序所引用。如变量Count是导出的，count就不是。
+
+2_2.声明
+1.声明的定义：
+  声明给一个程序实体（就像变量，类型，常量这种，用来存储）命名，并且设定其部分或全部属性。有4个主要的声明：变量（var）、常量（const）、类型（type）、函数（func）。
+  函数的声明：
+	func main() {} 最简单的main函数，是程序的入口。func后面的main是函数名。然后（）里面是参数列表。是用来接收外部数据的，可以没有。如果参数列表为空就是不接受数据。（）和{}之间的是返回值列表。也是可选的。不写就是没有返回值。写的话写明返回值的类型（可以有多个，多个时用（）括起来：func a() (int,int){}）
