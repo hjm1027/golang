@@ -1,0 +1,60 @@
+3 基本数据类型
+  go的数据类型分为四大类：基础类型、聚合类型、引用类型和接口类型。基础类型包括数字，字符串和布尔型。聚合类型有数组和结构体，它们是通过组合各种简单类型得到的更复杂数据。引用有指针、切片、map、函数和通道。它们共同点是全都间接指向程序的变量或状态。还有接口。
+
+1.整数：
+  rune是uint32类型的同义词。可以互换，rune一般用来指明一个值是Unicode码点（code point） byte类型是uiint8类型的同义词，强调一个值是原始数据。而非量值。
+
+2.布尔值（bool）:
+  布尔值不能隐式转化为0，1。反之也不行。很多表达式如带有>,==,!=等表达式的运算结果都是布尔值。
+
+#3.字符串类型（c里面没有):
+  字符串是不可变的字节序列（但是可以被重新定义），它可以包含任意数据。内置len函数可以求字符串的长度。下标可以访问对应字符。如s := "hello,world" s[0]='h' 但是不能像c一样直接通过下标访问改变。
+  s[i:j]产生一个s字符串的子串。其中0<=i<j<=len(s) 一共访问了j-i个元素。（前闭后开）
+###字符串永不可变 s=[2:3]这种s确实是改变了。但是只是把原来字符串的一小段截取出来并且重新为s赋值，本质上还是没有改变原来的字符串
+
+4.字符串和字节slice：
+  有4个标准包对字符串的操作特别重要，它们是：bytes,strings,strconv,unicode.
+  byte包用来操作字节切片（[]byte类型)。byte.Buffer是一种类型，它可以用于以逐个字符添加的方式把int转string。
+  strings包提供许多函数，用于搜索、替换、比较、修整、切分（split）、连接（join）字符串。
+  strconv包具备的函数，主要用于转换布尔值、整数（i（int）ota与atoi）、浮点数为与之对应的字符串。或者实现反操作。还有为字符串添加，删除引号的函数。
+###字符串其实是一个很平常的类型，和int型那些一样的。可以被重复赋值，可以用scanf接收（注意转义字符是%s）。
+
+strings包有以下6个函数：（对字符串）
+  func Contains(s,substr string) bool
+  func Count(s,sep string) int
+  func Fields(s string) []string
+  func HasPrefix(s,prefix string) bool
+  func Index(s,sep string) int
+  func Join(a []string,sep string) string
+
+bytes包里面的对应函数为：（对byte切片）
+  func Contains(b,subslice []byte) bool
+  func Count(s,sep []byte) int
+  func Fields(s []byte) [][]byte
+  func HasPrefixs(s,prefix []byte) bool
+  func Index(s,sep []byte) int
+  func Join(s [][]byte,sep []byte) []byte
+
+5.strings包中LastIndex函数：
+  f := strings.LastIndex(s,"cba")该函数在s字符串中找指定字符串。并且返回值指定字符串第一个字符的索引。（字符串可以是一个字符也可以是多个字符）"a"也算是字符串。只要是“”里面就表示字符串
+
+6.字符串和切片
+  与字符串相对的，切片可以改变元素允许任意修改，并且切片和字符串可以相互转换：
+  s := "abc"	声明字符串s
+  b := []byte(s)	把字符串s转换成slice b
+  s2 := string(b)	把slice b转换成字符串s2
+  所以一般要修改字符串的元素要转换成slice来修改。切片是索引，改变之后原来的字符串也会改变。
+
+7.bytes包的Buffers函数：
+  该类型初始零值有效。不需要初始化。起初为空，其大小随着各种类型的写入而増长。（用Fprintf）然后如果要在首尾添加ASCII字符，用buffers类型的WriteByte函数。
+  buf.WriteByte('[')
+  fmt.Fprintf(&buf,"%d",v)buf为类型，v为要转入的原值，转义字符是v的类型。可以把各种类型转换成字符串（大概）
+
+8.常量：
+  就用const声明
+		const(
+			pi = 3.1415926535
+		)
+
+9.字符串和数字的相互转换：
+  思路有三种。第一种切片切出来通过ASCII表+-‘0’实现。第二种是用buffer类新。第三种是用strconv包的Itoa函数。第四种是fmt.Sprintf函数
