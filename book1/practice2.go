@@ -2,12 +2,12 @@
 package main
 
 import (
-		"fmt"
-		"os"
+	"fmt"
+	"os"
 )
 
 func main() {
-		for i,value := range os.Args[1:]{
-				fmt.Printf("%d %s\n",i,value)
-		}
+	for i, value := range os.Args[1:] {
+		fmt.Printf("%d %s\n", i, value)
+	}
 }

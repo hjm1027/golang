@@ -4,12 +4,12 @@ package main
 import "fmt"
 
 func change(s []int) {
-		s[0]=100
+	s[0] = 100
 }
 
 func main() {
-		s :=make([]int,3)
-		s = []int{1,2,3}
-		change(s)
-		fmt.Println(s)
+	s := make([]int, 3)
+	s = []int{1, 2, 3}
+	change(s)
+	fmt.Println(s)
 }

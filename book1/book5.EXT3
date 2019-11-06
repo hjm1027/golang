@@ -1,0 +1,6 @@
+5_函数：
+
+1.函数的声明：
+  func name(parame-list) (result-list) {...body...}
+  每个函数声明包含一个名字（name）、一个形参列表（parame-list）、一个可选的返回列表(result-list）以及函数体（body） 
+  形参列表指定了一组变量的参数名和参数类型，这些局部变量都由调用者提供的实参 
