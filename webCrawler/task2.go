@@ -17,7 +17,6 @@ func main() {
     if err != nil {
         panic(err)
     }
-    fmt.Println("hello")
     body,err := ioutil.ReadAll(rp.Body)
     if err != nil {
         panic(err)
@@ -27,10 +26,11 @@ func main() {
     if err != nil {
         panic(err)
     }
-    fmt.Println("hello")
-    dom.Find("title").Each(func(i int,title*goquery.Selection) {
-        fmt.Printf("%3d",num)
+    dom.Find("div.title").Each(func(i int,s *goquery.Selection) {
+        s.Find("a[href][title]").Each(func(i int,title *goquery.Selection) {
+        fmt.Printf("第%3d个文档标题是：",num)
         fmt.Println(title.Text())
         num++
+    })
     })
 }

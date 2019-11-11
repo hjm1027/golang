@@ -1,0 +1,23 @@
+方法：
+方法是什么：
+  方法类似于一个函数，但是这个函数要绑定在一个类型变量（可以是结构体，可以是int可以是自定义类型）上，但是只能通过这个变量来调用。
+  方法声明：
+  func (recevier type) methodName (参数列表) (返回值列表){
+      method body(方法主体，相当于一些处理）
+      return 返回值(和函数一样，有返回值列表的时候需要写)
+  }
+  和函数相比只是func和methodName之间多了一个类型和该类型的形参而已。和调用时通过p.methodName()来调用。这个p就是该类型的变量，然后用.来调用，后面跟着方法名，参数列表不能省略，没有传入就为空。调用时该变量也会传进函数。如果是索引类型就会传入地址，其他传入值。和函数一样，传值不会对外面的源变量有影响，除非传指针：
+  func (recevier *type) methodName (参数列表) (返回值列表){
+      method body(要按照*recevier形式访问)
+      return 返回值
+  }
+  调用：(&p).methodName
+  要把地址传进去。
+  编译器对这个过程进行了优化，可以把&和*省略：
+  func (recevier *type) methodName(参数列表) (返回值列表){
+      method body(直接用receiver调用)
+      return 返回值
+  }
+  调用：p.methodName(不用传地址了)
+  如果要传参数就在参数列表里面写上。
+
