@@ -28,9 +28,9 @@ func main() {
     }
     dom.Find("div.title").Each(func(i int,s *goquery.Selection) {
         s.Find("a[href][title]").Each(func(i int,title *goquery.Selection) {
-        fmt.Printf("第%3d个文档标题是：",num)
-        fmt.Println(title.Text())
-        num++
-    })
+            fmt.Printf("第%3d个文档标题是：",num)
+            fmt.Println(title.Text())
+            num++
+        })
     })
 }

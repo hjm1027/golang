@@ -27,7 +27,7 @@ func main() {
     if err != nil {
         panic(err)
     }
-    ele.Find("title").Each(func(i int,s *goquery.Selection){
+    dom.Find("title").Each(func(i int,s *goquery.Selection){
         fmt.Println(s.Text())
     })
 }

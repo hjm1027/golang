@@ -1,0 +1,114 @@
+1.网络请求原理：
+  爬虫和网络的原理密不可分。想了解爬虫原理我们首先要了解网络原理。
+  网络原理：网络太抽象，但是我们可以举一个实例。你打开了火狐浏览器（浏览器种类可以随意）用百度搜索“go语言”，会发生什么？首先是你的浏览器发送请求（其实就是发送一段信息）。而这个能发送请求的，就像浏览器一样的叫做客户端。那么发给谁呢？实际上是发送给了一个叫做服务端（你可以理解为一台电脑）的地方。和客户端相对的，服务端识别客户端发送过来的请求报文（发送的内容叫做报文），然后给客户端发送一个响应报文。这个响应报文分为几个部分，而中间有一个叫body的部分，有着你要访问页面的html源代码（就是写这个网页的代码，网页也是通过代码来写的）而这个代码经过浏览器处理，就变成了你看见的样子。
+  我们在火狐浏览器右上角菜单可以选择web开发者->web控制台来查看页面源代码和部分网络报文。当然也可以直接打开网页源代码进行查看。打开源代码之后，你肯地看不懂。但是你应该可以看懂一些东西，比如说<>和</>中间夹着一些文字，这两边的东西就叫做标签。以后我们爬取数据的时候会用上。
+
+2.爬虫原理：
+  爬虫其实就是获取这个响应报文的页面源代码，然后通过数据筛选出有用的信息，而这个信息筛选，是通过go里面http包的selection类型的内置方法Find和Each实现的。当然这么说你可能看不懂，那么就先记住，Find叫做选择器，Each叫做迭代器。
+
+3.爬虫的实现：
+  要实现爬虫，首先要说的是向网址（网址就是URL）发送请求。爬取容易爬的网页（比如go语言中文网），可以直接用http包里面的Get函数实现： rp,err := http.Get("(你的URL)")。这个方法返回两个值，第一个是响应报文，第二个是判断请求是否出错的值。接下来我们要用一个if语句来判断err是否为nil，为nil是正常的，若不是则要经过一段处理，一般是panic（err）强制退出，当然还有别的方法。
+  获取响应报文后，我们要把body部分取出来：
+  body,err := ioutil.ReadAll(rp.Body)
+  通过ioutil包的readall函数来读取，其中rp是一个类似于结构体的东西，而Body是其中成员。同理返回的body会以byte形式存储，err也要用if判断。之后由于readall函数打开了文件，我们要用一个defer语句：defer rp.Body.Close() 来在main函数最后关闭文件。当把body取出来之后，需要转换成string类型。可以直接用强制类型转换： string(body) 之后我们就可以建立文档树(dom)来对这个body进行筛选了。
+  筛选通过goquery第三方包进行，需要下载。get go是不行的，因为被墙了。我们可以直接在go文件夹里面找指定文件夹（具体自行百度）然后用git clone那个。下载之后就解决了。（好像还要下一个net包）
+  筛选用： dom,err := goquery.NewDocumentFromReader(strings.NewReader(body))
+  这个把文档数建立起来，dom是一个可操作的html文件。（有err不必多说）
+  
+  dom.Find("(标签名)").Each(func(i int,selection *goquery.Selection) {
+      ...
+  }
+  这个就是一次筛选，其中Find的""里面是标签名，可以是a、div、p等等等等。而Each控制每次迭代，这里就是每次迭代就引用一次func函数，函数里面的i和selection参数名可以自己定，你也可以是n和s。但是后面类型不行。然后里面的东西，可以用selection.Text()来提取文本。然后用println就能输出，Find选择器的其他形式可以自己百度。
+  完整代码：
+//爬取go中文网
+//一页中的所有文档的标题。格式为: 第n个文档标题：title
+package main
+
+import (
+    "fmt"
+    "io/ioutil"
+    "net/http"
+    "strings"
+
+    "github.com/PuerkitoBio/goquery"
+)
+
+func main() {
+    num :=1
+    rp,err:=http.Get("https://studygolang.com/topics")
+    if err != nil {
+        panic(err)
+    }
+    body,err := ioutil.ReadAll(rp.Body)
+    if err != nil {
+        panic(err)
+    }
+    defer rp.Body.Close()
+    dom,err := goquery.NewDocumentFromReader(strings.NewReader(string(body)))
+    if err != nil {
+        panic(err)
+    }
+    dom.Find("div.title").Each(func(i int,s *goquery.Selection) {
+        s.Find("a[href][title]").Each(func(i int,title *goquery.Selection) {
+            fmt.Printf("第%3d个文档标题是：",num)
+            fmt.Println(title.Text())
+            num++
+        })
+    })
+}
+
+  当然你也可以像我这样嵌套，但本质是一样的。
+
+4.模拟登陆：
+  模拟登陆其实和上面的区别不大。模拟登陆有两个关键：cookie和User-Agent
+  这两个东西就是自己上网页找的，在web控制台的网络栏。不难。直接上代码吧。
+  //模拟登陆爬豆瓣网
+package main
+
+import (
+    "fmt"
+    "io/ioutil"
+    "net/http"
+    "strings"
+    "github.com/PuerkitoBio/goquery"
+)
+
+//把cookie复制变成全局变量
+    var cookie string ="..."
+
+func getUrlRespHtml() string {
+    url1 := "..."
+    client:=&http.Client{}//创建一个client类型(客户端)变量
+    req,err := http.NewRequest("GET",url1,nil)//通过NewRequest函数发送请求，第一个参数是发送方法，第二个是网址，第三个不知道是什么（暂时）返回响应报文要确定是否为客户>端登陆，存储在req里面。
+    if err != nil {
+        fmt.Println("获取地址错误")
+        panic(err)
+    }
+
+    req.Header.Set("Cookie",cookie)//在req报文头部加上cookie（用来确定客户端的一段信息）req应该是一种变量类型，Header是方法。
+    req.Header.Add("User-Agent","...")//在头部加上Agent，用来破解反爬虫
+    resp,err := client.Do(req)//通过Do方法从客户端发送请求，用resp存储响应报文
+    if err != nil {
+        fmt.Println("登陆错误")
+        panic(err)
+    }
+
+    //client.Do发送请求后，后面的步骤就一样了。通过readall读取，然后编辑
+    resp_byte,err := ioutil.ReadAll(resp.Body)
+    defer resp.Body.Close()
+    respHtml := string(resp_byte)
+    return respHtml
+}
+
+func main() {
+    //fmt.Println(getUrlRespHtml())
+    dom,err := goquery.NewDocumentFromReader(strings.NewReader(getUrlRespHtml()))
+    if err != nil {
+        panic(err)
+    }
+    dom.Find("a").Each(func(i int,s *goquery.Selection) {
+        fmt.Println(s.Text())
+    })
+}
+
+  cookie是一串很长的的东西，也可以不长。看网页。这个client实际上是声明了一个http包的client（客户端）类型变量，主要用来模拟客户端发送请求。然后这里不用Get函数而用newRequest函数。第一个参数是http方法，后面是网址，第三个是nil。返回和get函数其实时一样的，就是newrequest还能用别的http方法。然后下面的req内的方法Header.Set是在头文件里面加上设置cookie和加上user-agent。然后再用客户端的do方法发送一次。这个过程其实是三次握手。客户端先发送请求，然后服务端发送报文确认是否登陆，客户端再发送请求，三次发送称为三次握手。后面的处理就和前面的一模一样了。一共需要经历五次转化。
