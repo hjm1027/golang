@@ -14,7 +14,7 @@ var cookie string ="ll=\"118254\"; bid=0LNvjfUx_W4; _pk_ref.100001.8cb4=%5B%22%2
 func getUrlRespHtml() string {
     url1 := "https://www.douban.com/note/739111474/"
     client := &http.Client{}
-    req,err :=http.NewRequest("Post",url1,nil)
+    req,err :=http.NewRequest("POST",url1,nil)
     if err != nil {
         fmt.Println("获取地址失败")
         panic(err)
