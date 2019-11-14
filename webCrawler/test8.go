@@ -61,9 +61,6 @@ func main() {
     }
     fmt.Println(res.Status)
 
-//测试能不能把头部搞下来
-    var cookie =res.Header.Get("Set-Cookie")
-    fmt.Println(cookie)
     var UserAgent ="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
 
     result := gjson.Get(string(body),"message")//gjson包用来抓取信息
@@ -72,16 +69,17 @@ func main() {
 
     url1 := "https://www.douban.com/people/JacksieCheung/"
     client:=&http.Client{}//创建一个client类型(客户端)变量
-    req2,err := http.NewRequest("POST",url1,nil)//通过NewRequest函数发送请求，第一个参数是发送方法，第二个是网址，第三个不知道是什么（暂时）返回响应报文要确定是否为客户>端登陆，存储在req里面。
+    req2,err := http.NewRequest("POST",url1,payload)//通过NewRequest函数发送请求，第一个参数是发送方法，第二个是网址，第三个不知道是什么（暂时）返回响应报文要确定是否为客户>端登陆，存储在req里面。这个payload其实没什么用
     if err != nil {
         fmt.Println("获取地址错误")
         panic(err)
     }
-
-    var cookie = res.Cookies()
+//这里是关键的关键!!!
+    var cookie =res.Cookies()
     for _,v := range cookie {
         req2.AddCookie(v)
     }
+    //req2.AddCookie(cookie)//在req报文头部加上cookie（用来确定客户端的一段信息）req应该是一种变量类型，Header是方法。
     req2.Header.Add("User-Agent",UserAgent)//在头部加上Agent，用来身份验证。
     resp,err := client.Do(req2)//通过Do方法从客户端发送请求，用resp存储响应报文
     if err != nil {

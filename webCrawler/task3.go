@@ -10,7 +10,7 @@ import (
 )
 
 //把cookie复制变成全局变量
-    var cookie string ="ll=\"118254\"; bid=0LNvjfUx_W4; _pk_ref.100001.8cb4=%5B%22%22%2C%22%22%2C1573539751%2C%22https%3A%2F%2Fwww.baidu.com%2Flink%3Furl%3DYpwQMffJEsWWgWIck81T-ohlIOix7Ybl5lJdjOzJavK%26wd%3D%26eqid%3Dc987689000098893000000035dca4fa1%22%5D; _pk_id.100001.8cb4=c7a02bb4384b122e.1573370762.4.1573539773.1573535471.; __utma=30149280.366677727.1573372537.1573535477.1573539752.4; __utmz=30149280.1573539752.4.3.utmcsr=baidu|utmccn=(organic)|utmcmd=organic; __utmc=30149280; dbcl2=\"206624187:ZfxJoGAtWH0\"; ck=kBTR; __yadk_uid=kenKxbEsrfnrnUU9mvUm0hkMM0vmUrQM; push_noty_num=0; push_doumail_num=0; __utmv=30149280.20662; douban-profile-remind=1; ap_v=0,6.0; _pk_ses.100001.8cb4=*; __utmb=30149280.6.10.1573539752; __utmt=1"
+    var cookie string ="ll=\"118254\"; bid=lEtJZhiJtxs; __utmc=30149280; __yadk_uid=OPRC2Mj3QDkp0O4R6AgmOvAbLOpKv4mr; push_noty_num=0; push_doumail_num=0; __utmv=30149280.20662; douban-profile-remind=1; __utmz=30149280.1573704403.5.3.utmcsr=accounts.douban.com|utmccn=(referral)|utmcmd=referral|utmcct=/passport/login; _pk_ref.100001.8cb4=%5B%22%22%2C%22%22%2C1573707774%2C%22https%3A%2F%2Faccounts.douban.com%2Fpassport%2Flogin%22%5D; _pk_ses.100001.8cb4=*; __utma=30149280.1952350357.1573642118.1573704403.1573707775.6; ap_v=0,6.0; __utmt=1; dbcl2=\"206624187:Z+eC2q//ZGw\"; ck=Tzan; _pk_id.100001.8cb4=cc2d231d519253ea.1573642113.6.1573708649.1573704402.; __utmb=30149280.14.10.1573707775"
 
 func getUrlRespHtml() string {
     url1 := "https://www.douban.com/people/206624187/"
@@ -22,7 +22,7 @@ func getUrlRespHtml() string {
     }
 
     req.Header.Set("Cookie",cookie)//在req报文头部加上cookie（用来确定客户端的一段信息）req应该是一种变量类型，Header是方法。
-    req.Header.Add("User-Agent","Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0")//在头部加上Agent，用来破解反爬虫
+    req.Header.Add("User-Agent","Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0")//在头部加上Agent，用来身份验证。
     resp,err := client.Do(req)//通过Do方法从客户端发送请求，用resp存储响应报文
     if err != nil {
         fmt.Println("登陆错误")
