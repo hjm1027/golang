@@ -3,17 +3,17 @@ package main
 
 import (
     "flag"
-    "fmt"
+    //"fmt"
     "net/http"
 )
 
 func main() {
-    host := flag.String("host","127.0.0.1","listen host")
-    port := flag.String("port","80","listen port")
+    host := flag.String("host","127.0.0.1","listen host")//127.0.0.1就是本地的地址
+    port := flag.String("port","9090","listen port")//设置接口
 
-    http.HandleFunc("/hello",Hello)
+    http.HandleFunc("/hello",Hello)//这个函数是设置域名，第一个参数设置了hello域名，访问只要在原来地址后面加上域名就可以了
 
-    err := http.ListenAndServe(*host+":"+*port,nil)
+    err := http.ListenAndServe(*host+":"+*port,nil)//设置监听端口，有两种方式，第一种是第一个参数像这样完整的，还有一种可以直接":9090"设置。
 
     if err != nil {
         panic(err)
@@ -21,4 +21,5 @@ func main() {
 }
 
 func Hello(w http.ResponseWriter,req *http.Request) {
-<p>   w.Write([]byte("Hello World"))</p>}
+    w.Write([]byte("Hello World"))//write方法写入
+}
