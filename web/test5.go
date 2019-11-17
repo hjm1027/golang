@@ -9,8 +9,12 @@ import (
 type MyHttpHandler struct{}
 
 func (handler MyHttpHandler)ServeHTTP(w http.ResponseWriter,r *http.Request) {
-    if 
-    w.Write([]byte("<html><body>Hello,world!</body></html>"))
+    switch r.URL.Path {
+        case "/a":
+            w.Write([]byte("<html><body>Hello,world!</body></html>"))
+        case "/b":
+            w.Write([]byte("<html><body>Goodbye,world!</body></html>"))
+        }
 }
 
 func main() {
