@@ -1,4 +1,5 @@
 //登陆界面实例
+//网页跳转是前段实现的！！！
 package main
 import (
     "fmt"
@@ -45,7 +46,7 @@ func login(w http.ResponseWriter, r *http.Request) {
     }
 }
 func main() {
-    http.HandleFunc("/", sayHelloName)
+    http.HandleFunc("/hello", sayHelloName)
     http.HandleFunc("/login", login)
     err := http.ListenAndServe("localhost:9090", nil)
     if err != nil {

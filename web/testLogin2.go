@@ -24,7 +24,7 @@ func main() {
         }
 }
 func login(w http.ResponseWriter, r *http.Request){
-       t, _ := template.ParseFiles("loginss.html")
+       t, _ := template.ParseFiles("testLogin2.html")
        t.Execute(w,"")
 }
 func hand(w http.ResponseWriter, r *http.Request) {
