@@ -1,4 +1,4 @@
-//实现验证码
+//实现数据持久化
 package main
 
 import (

@@ -1,4 +1,5 @@
 //实现数据的持久化
+//利用数据库保存信息
 package main
 
 import (
@@ -6,26 +7,28 @@ import (
 	"log"
 	"net/http"
 	"os"
-	//"strings"
 	"encoding/json"
 	"html/template"
-	"io/ioutil"
+	//"io/ioutil"
 	"time"
-	//"encoding/csv"
+    "github.com/jinzhu/gorm"
+    _"github.com/go-sql-driver/mysql"
 )
 
-//建立一个map来存储用户信息
-var Users = make(map[string]string)
+//建立一个Users来存储用户信息
+type Users struct {
+    Username string
+    Password string
+}
 var RealName string
+var DB *gorm.DB
 
-//这是一个程序初始化处理，通过这个把本地的数据先导入map，再运行web
+//这是一个程序初始化处理，连上数据库
 func init() {
-	data, err := ioutil.ReadFile("/home/jacksie/desk/golang/web/testWeb1/dataBase1.csv")
-	if err != nil {
-		fmt.Println(err)
-	}
-	//把json反序列化变成map
-	err = json.Unmarshal([]byte(string(data)), &Users)
+    DB,err := gorm.Open("mysql","JacksieCheung:15811852133@/JacksieCheung?charset=utf8&parseTime=True&loc-Local")
+    if err != nil {
+        panic(err)
+    }
 }
 
 //登陆板块
@@ -36,22 +39,21 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		t, _ := template.ParseFiles("login1.html")
 		t.Execute(w, nil)
 	} else {
-		var username, password string
+		var user Users
 		r.ParseForm() //这是对传入的表单格式进行解析
 		for _, v := range r.Form["username"] {
-			username = v
+			user.Username = v
 			RealName = v //设定一个全局变量便于存储map
 		}
 		for _, v := range r.Form["password"] {
-			password = v
+			user.Password = v
 		}
-		if _, ok := Users[username]; ok {
-			if password != Users[username] {
-				t, _ := template.ParseFiles("login1.html")
-				t.Execute(w, nil)
-				fmt.Fprintln(w, "Wrong password")
-				return
-			}
+		//在数据库中查询
+        if DB.Where(&user{Username:"
+
+
+
+
 			//简易cookie的实现
 			tNow := time.Now()
 			cookie := http.Cookie{Name: "name", Value: RealName, Expires: tNow.AddDate(1, 0, 0)}
