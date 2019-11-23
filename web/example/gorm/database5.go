@@ -4,13 +4,13 @@ package main
 import (
     "github.com/jinzhu/gorm"
     _"github.com/go-sql-driver/mysql"
-    "time"
+    //"time"
 )
 
 type Users struct {
     Username string `gorm:"type:varchar(128);not null;index:username_idx"`
     Password string `gorm:"type:varchar(128);not null;"`
-    CreatedAt time.Time
+    //CreatedAt time.Time
 }
 
 func main() {
